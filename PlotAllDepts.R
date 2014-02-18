@@ -14,12 +14,13 @@ ArtCounts <- data.frame("Discipline"=as.character(rownames(ArtCounts)), "Article
 
 #plot complete depts (ggplot)
 ArtCounts$Journals.ordered <- reorder(ArtCounts$Discipline, ArtCounts$ArticlesPublished) #sort Discipline by Articles Published
+pth <- pth <- file.path(getwd(), "Plots", "plots3") # set a location for plots to be saved
 compl.depts.plot <- ggplot(data=ArtCounts) +
   geom_bar(aes(x=Journals.ordered,y=ArticlesPublished),fill="orange",color="black",stat="identity") +
   coord_flip() +
   geom_text(aes(x=Discipline, y=ArticlesPublished, label=ArticlesPublished), hjust = -0.5, size=6) + #set text labels
   ggtitle(label="Total Article Counts in Open Access Publications by Department, UTA 2004-2011")
-print(compl.depts.plot)
+ggsave("AllDepts.png", path=pth, width=15, height=15) #save files 
 
 
 #plot depts color-coded by journal (ggplot)
