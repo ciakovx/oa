@@ -33,11 +33,11 @@ oa.journals <- function(directory) {
     q <- q-4
     discbasename <- substr(discbasename, 1, q)
     sbst <- subset(discipline, discipline$UnitArticles >= 1) # create subset of journals with >=1 citation from researchers in the unity
-    newdf <- data.frame("JournalName"=toupper(sbst$JournalName), "UnitArticles"=sbst$UnitArticles, stringsAsFactors = FALSE) # create dataframe including only journal name and unit articles
-    oa <- newdf$Journal %in% doaj.list # create logical variable of journals matching DOAJ's list of open access journals
+    newdf <- data.frame("JournalName"=toupper(sbst$JournalName), "UnitArticles"=sbst$UnitArticles, stringsAsFactors = FALSE) # create dataframe including only journal name and unit articles and convert to upper case
+    oa <- newdf$Journal %in% doaj.list # create logical variable of journals matching DOAJ's list of open access journals as created in the above command
     if (any(oa) == T) { # if there are any matches, 
       jrns <- subset(newdf, oa) # out of that subset, return the journals that are oa & the unit article count for that journal
-      oadf <- data.frame(jrns$JournalName, jrns$UnitArticles, rep(discbasename,length(jrns$JournalName)), stringsAsFactors = F) # add to the dataframe -must coerce journal names to character!
+      oadf <- data.frame(jrns$JournalName, jrns$UnitArticles, rep(discbasename,length(jrns$JournalName)), stringsAsFactors = F) # add to the dataframe
       names(oadf) <- names(df) # change column names so rbind will work
       df <- rbind(df, oadf)
     } else { # if there are no T values (i.e. no OA publications)
