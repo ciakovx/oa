@@ -8,14 +8,15 @@ Totals <- function(directory) {
   names(df) <- c("Author", "Publisher", "ArticleTitle", "Department") # name dataframe columns
   for (i in 1:length(files)) {
     department <- read.csv(file=filepath[i], na.strings="") # read first csv, use na.strings to put NA values in for blank values
-    department2 <- department[complete.cases(department$dc.type.en_US.),] # remove NA values from Type field
-    discbasename <- basename(filepath[i]) # get name of discipline from filename
-    q <- nchar(discbasename) # the next three commands get rid of the .csv and extract the discipline name (this would have been unnecessary if there were a consist variable for department)
-    q <- q-4
-    discbasename <- substr(discbasename, 1, q)
-    if (any(department$dc.type.en_US. == "Article")) { # only looking at Type fields that are articles (i.e. not dissertations, presentations, etc.)
-      sbs <- department[department$dc.type.en_US == "Article",] # create a subset of article types
-      newdf <- data.frame(sbs$dc.contributor.author, sbs$dc.publisher.en_US., sbs$dc.title.en_US.,  discbasename) # a new dataframe extracting values from that subset
+    dp <- department[complete.cases(department$dc.type.en_US.),] # remove NA values from Type field
+    if (any(dp$dc.type.en_US. == "Article")) { # if there are any values of Article in the Type field
+      dp <- dp[dp$dc.type.en_US. == "Article", ] # create a subset of the df with type Article
+      dp$dc.type.en_US. <- as.character(dp$dc.type.en_US.) # Convert that vector to character (rather than drop the factors)
+      discbasename <- basename(filepath[i]) # get name of discipline from filename
+      q <- nchar(discbasename) # the next three commands get rid of the .csv and extract the discipline name (this would have been unnecessary if there were a consist variable for department)
+      q <- q-4
+      discbasename <- substr(discbasename, 1, q)
+      newdf <- data.frame(dp$dc.contributor.author, dp$dc.publisher.en_US., dp$dc.title.en_US.,  discbasename) # a new dataframe extracting values from that subset
       names(newdf) <- names(df) # change column names so rbind will work
       df <- rbind(df, newdf)
     } 
@@ -23,7 +24,15 @@ Totals <- function(directory) {
   
   return(df)
 }
+
 depts.ir <- Totals("Depts") # return a dataframe
+
+
+if (!is.null(dp$dc.type.en_US.)) {
+  newdf <- data.frame(dp$dc.contributor.author, dp$dc.publisher.en_US., dp$dc.title.en_US.,  discbasename) # a new dataframe extracting values from that subset
+  names(newdf) <- names(df) # change column names so rbind will work
+  df <- rbind(df, newdf)
+
 
 ## plot total articles
 ircounts <- as.data.frame(table(depts.ir$Department)) # get total counts of the Department factor and put it in a dataframe (it acts as a proxy for submissions)
