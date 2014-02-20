@@ -19,7 +19,10 @@ compl.depts.plot <- ggplot(data=ArtCounts) +
   geom_bar(aes(x=Journals.ordered,y=ArticlesPublished),fill="orange",color="black",stat="identity") +
   coord_flip() +
   geom_text(aes(x=Discipline, y=ArticlesPublished, label=ArticlesPublished), hjust = -0.5, size=6) + #set text labels
-  ggtitle(label="Total Article Counts in Open Access Publications by Department, UTA 2004-2011")
+  ggtitle(label="Total Article Counts in Open Access Publications by Department, UTA 2004-2011") +
+  ylab("Number of Articles Published") +
+  xlab("Department") +
+  theme(text = element_text(size=20))
 ggsave("AllDepts.png", path=pth, width=15, height=15) #save files 
 
 
