@@ -28,12 +28,6 @@ Totals <- function(directory) {
 depts.ir <- Totals("Depts") # return a dataframe
 
 
-if (!is.null(dp$dc.type.en_US.)) {
-  newdf <- data.frame(dp$dc.contributor.author, dp$dc.publisher.en_US., dp$dc.title.en_US.,  discbasename) # a new dataframe extracting values from that subset
-  names(newdf) <- names(df) # change column names so rbind will work
-  df <- rbind(df, newdf)
-
-
 ## plot total articles
 ircounts <- as.data.frame(table(depts.ir$Department)) # get total counts of the Department factor and put it in a dataframe (it acts as a proxy for submissions)
 names(ircounts) <- c("Department", "ArticlesInIR") # rename columns
@@ -43,7 +37,10 @@ depts.ir.plot <- ggplot(data=ircounts) +
   geom_bar(aes(x=departments.ordered,y=ArticlesInIR),fill="green",color="black",stat="identity") +
   coord_flip() +
   geom_text(aes(x=Department, y=ArticlesInIR, label=ArticlesInIR), hjust = -0.5, size=6) + #set text labels
-  ggtitle(label="Total Articles Deposited in ResearchCommons by Department")
+  ggtitle(label="Total Articles Deposited in ResearchCommons by Department") +
+  ylab("Number of Articles Deposited") +
+  xlab("Department") +
+  theme(text = element_text(size=20))
 print(depts.ir.plot)
 ggsave(filename="IR Deposits.jpg", plot=depts.ir.plot, path=pth, width=15, height=15) #save files 
 
@@ -52,7 +49,7 @@ ggsave(filename="IR Deposits.jpg", plot=depts.ir.plot, path=pth, width=15, heigh
 depts.ir.list <- unique(depts.ir$Department) # create list of departments with oa publications
 #Loop through depts.ir dataframe, creating graph of publishers for each department and saving it to file
 for(i in seq(length(depts.ir.list))) { #looping through the depts (seq must be used because it is a list)
-  sbst <- depts.ir[depts.ir$Department == deptslist[i], ] # create a subset of depts where the discipline is equal to discipline list item i
+  sbst <- depts.ir[depts.ir$Department == depts.ir.list[i], ] # create a subset of depts where the discipline is equal to discipline list item i
   sbst <- data.frame(as.character(sbst$Publisher), stringsAsFactors = F)
   sbst <- as.data.frame(table(sbst))
   names(sbst) <- c("Publisher", "NumberItems")
@@ -62,7 +59,8 @@ for(i in seq(length(depts.ir.list))) { #looping through the depts (seq must be u
     coord_flip() + # flip axis to create horizontal barchart
     geom_text(aes(x=Publisher, y=NumberItems, label=NumberItems, ymax=20), hjust = -1, size=6) + #set text labels
     scale_y_continuous(limits=c(0,40)) + # set limits for y axis (which is flipped, so represents Articles)
-    ggtitle(label=(paste("Publishers of Items Deposited by",deptslist[i]))) # give it a title
-  ggsave(sprintf("%s.jpg", deptslist[i]), path=pth, width=15, height=15) #save files 
+    ggtitle(label=(paste("Publishers of Items Deposited by",depts.ir.list[i]))) # give it a title
+  ggsave(sprintf("%s.jpg", depts.ir.list[i]), path=pth, width=15, height=15) #save files 
 }
 }
+deptslist
