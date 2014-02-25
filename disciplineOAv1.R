@@ -30,9 +30,9 @@ oa.journals <- function(directory) {
   for (i in 1:length(files)) {
     discipline <- read.csv(file=filepath[i]) # read first csv
     discbasename <- basename(filepath[i]) # get name of discipline from filename
-    q <- nchar(discbasename) # the next three commands get rid of the .csv and extract the discipline name
-    q <- q-4
-    discbasename <- substr(discbasename, 1, q)
+    q <- nchar(discbasename) # the next three commands get rid of the ".csv" and return the discipline name. First get an integer value for the number of characters in the basename
+    q <- q-4 # subtract 4 characters from that (".csv")
+    discbasename <- substr(discbasename, 1, q) # get a character variable of the basename minus the ".csv"
     sbst <- subset(discipline, discipline$UnitArticles >= 1) # create subset of journals with >=1 citation from researchers in the unity
     newdf <- data.frame("JournalName"=toupper(sbst$JournalName), "UnitArticles"=sbst$UnitArticles, stringsAsFactors = FALSE) # create dataframe including only journal name and unit articles and convert to upper case
     oa <- newdf$Journal %in% doaj.list # create logical variable of journals matching DOAJ's list of open access journals as created in the above command
