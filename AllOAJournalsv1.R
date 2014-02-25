@@ -7,27 +7,31 @@ aa.journals <- read.csv(file=file.path(getwd(), "Copy of Journals_AAD2011.csv"))
 
 
 
-doaj.list <- data.frame(doaj$Title) # get list of DOAJ titles
-doaj.list <- factor(doaj.list$doaj.Title) # convert to factor
-doaj.list <- toupper(doaj.list) # convert to upper case
-dupe.a <- duplicated(doaj.list) # logical vector of duplicates
-doaj.list <- doaj.list[!dupe.a] # return all DOAJ titles
+doaj.titles <- data.frame(doaj$Title) # get list of DOAJ titles
+doaj.titles <- factor(doaj.titles$doaj.Title) # convert to factor
+doaj.titles <- toupper(doaj.titles) # convert to upper case
+dupe.a <- duplicated(doaj.titles) # logical vector of duplicates
+doaj.list <- doaj.titles[!dupe.a] # return all DOAJ titles as characters, in caps, without duplicates
+doaj.list.dupes <- doaj.titles[dupe.a] # return all duplicated journals from the DOAJ list (14)
 
-aa.list <- data.frame(aa.journals$AAD.2011.Journal.List) # get list of AA titles
-aa.list <- factor(aa.list$aa.journals.AAD.2011.Journal.List) # convert to factor
-aa.list <- toupper(aa.list) # convert to upper case
-dupe.b <- duplicated(aa.list) # logical vector of duplicates
-aa.list <- aa.list[!dupe.b] # return all AA journals
+aa.titles <- data.frame(aa.journals$AAD.2011.Journal.List) # get list of AA titles
+aa.titles <- factor(aa.titles$aa.journals.AAD.2011.Journal.List) # convert to factor
+aa.titles <- toupper(aa.titles) # convert to upper case
+dupe.b <- duplicated(aa.titles) # logical vector of duplicates
+aa.list <- aa.titles[!dupe.b] # return all AA journals as characters, in caps, without duplicates
+aa.list.dupes <- aa.titles[dupe.b] # return all duplicated journals from the AA list (203,883)
 
-
-scopus.list <- data.frame(scopus$Title) # get list of AA titles
-scopus.list <- factor(scopus$Title) # convert to factor
-scopus.list <- toupper(scopus.list) # convert to upper case
-dupe.c <- duplicated(scopus.list) # logical vector of duplicates
-scopus.list <- scopus.list[!dupe.c] # return all AA journals
+scopus.titles <- data.frame(scopus$Title) # get list of Scopus titles
+scopus.titles <- factor(scopus$Title) # convert to factor
+scopus.titles <- toupper(scopus.titles) # convert to upper case
+dupe.c <- duplicated(scopus.titles) # logical vector of duplicates
+scopus.list <- scopus.titles[!dupe.c] # return all Scopus journals as characters, in caps, without duplicates
+scopus.list.dupes <- scopus.titles[dupe.c] # return all duplicated journals from the Scopus list (156)
 
 
 
 aa.doaj <- intersect(doaj.list,aa.list) # intersection of AA & DOAJ journals (1,117)
 aa.scopus <- intersect(aa.list, scopus.list) # intersection of AA & Scopus (10,745)
 scopus.doaj <- intersect(scopus.list, doaj.list) # intersection of Scopus & DOAJ (2,015)
+
+doaj.total <- intersect(aa.doaj, scopus.doaj) # DOAJ titles in both AA & Scopus (796)
