@@ -7,10 +7,11 @@ doaj <- read.csv(file="C:/Users/clarke/Desktop/AcademicAnalyticsData/DOAJ.csv") 
 #get a list of DOAJ titles as character
 doaj.titles <- data.frame(doaj$Title) # get list of DOAJ titles
 doaj.titles <- factor(doaj.titles$doaj.Title) # convert to factor
+doaj.titles <- str_trim(doaj.titles, side = "both") # trim extra spaces on doaj list
 doaj.titles <- toupper(doaj.titles) # convert to upper case
 dupe.a <- duplicated(doaj.titles) # logical vector of duplicates
-doaj.list <- doaj.titles[!dupe.a] # return all DOAJ titles as characters, in caps, without duplicates
-doaj.list.dupes <- doaj.titles[dupe.a] # return all duplicated journals from the DOAJ list (14)
+doaj.list <- doaj.titles[!dupe.a] # return all DOAJ titles as characters, in caps, without duplicates (9,786)
+doaj.list.dupes <- doaj.titles[dupe.a] # return all duplicated journals from the DOAJ list (18)
 
 
 oa.journals <- function(directory) {
@@ -34,7 +35,9 @@ oa.journals <- function(directory) {
     q <- q-4 # subtract 4 characters from that (".csv")
     discbasename <- substr(discbasename, 1, q) # get a character variable of the basename minus the ".csv"
     sbst <- subset(discipline, discipline$UnitArticles >= 1) # create subset of journals with >=1 citation from researchers in the unity
-    newdf <- data.frame("JournalName"=toupper(sbst$JournalName), "UnitArticles"=sbst$UnitArticles, stringsAsFactors = FALSE) # create dataframe including only journal name and unit articles and convert to upper case
+    Clean.Journal.Name <- str_trim(sbst$JournalName, side = "both") # Delete leading and trailing spaces
+    Clean.Journal.Name <- toupper(Clean.Journal.Name) # Convert journal name to uppercase
+    newdf <- data.frame("JournalName" = Clean.Journal.Name, "UnitArticles"=sbst$UnitArticles, stringsAsFactors = FALSE) # create dataframe including only journal name and unit articles and convert to upper case
     oa <- newdf$Journal %in% doaj.list # create logical variable of journals matching DOAJ's list of open access journals as created in the above command
     if (any(oa) == T) { # if there are any matches, 
       jrns <- subset(newdf, oa) # out of that subset, return the journals that are oa & the unit article count for that journal
