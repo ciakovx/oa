@@ -5,11 +5,12 @@ doaj <- read.csv(file="C:/Users/clarke/Desktop/AcademicAnalyticsData/DOAJ.csv") 
 
 
 #get a list of DOAJ titles as character
-doaj.list <- data.frame(doaj$Title) # get list of DOAJ titles
-doaj.list <- factor(doaj.list$doaj.Title) # convert to factor
-doaj.list <- toupper(doaj.list) # convert to upper case
-dupe.a <- duplicated(doaj.list) # logical vector of duplicates
-doaj.list <- doaj.list[!dupe.a] # return all DOAJ titles
+doaj.titles <- data.frame(doaj$Title) # get list of DOAJ titles
+doaj.titles <- factor(doaj.titles$doaj.Title) # convert to factor
+doaj.titles <- toupper(doaj.titles) # convert to upper case
+dupe.a <- duplicated(doaj.titles) # logical vector of duplicates
+doaj.list <- doaj.titles[!dupe.a] # return all DOAJ titles as characters, in caps, without duplicates
+doaj.list.dupes <- doaj.titles[dupe.a] # return all duplicated journals from the DOAJ list (14)
 
 
 oa.journals <- function(directory) {
