@@ -1,7 +1,11 @@
 #first 
-setwd("C:/Users/clarke/Desktop/AcademicAnalyticsData") #set working directory
+setwd("J:/Escience/Academic Analytics") #set working directory
 #then read in 
-doaj <- read.csv(file="C:/Users/clarke/Desktop/AcademicAnalyticsData/DOAJ.csv") # import directory of OA journals file
+doaj <- read.csv(file=file.path(getwd(), "data", "2014-02-02", "DOAJ", "DOAJ.csv")) # read in directory of OA journals file
+aa.journals <- read.csv(file=file.path(getwd(), "data", "2014-02-02", "AAJournalList", "AAJournalList.csv")) # read in the Academic Analytics file
+
+
+library(stringr) # Load stringr package
 
 
 #get a list of DOAJ titles as character
@@ -13,20 +17,36 @@ dupe.a <- duplicated(doaj.titles) # logical vector of duplicates
 doaj.list <- doaj.titles[!dupe.a] # return all DOAJ titles as characters, in caps, without duplicates (9,786)
 doaj.list.dupes <- doaj.titles[dupe.a] # return all duplicated journals from the DOAJ list (18)
 
+# get a list of AA journals by character
+aa.titles <- data.frame(aa.journals$AAD.2011.Journal.List) # get list of AA titles
+aa.titles <- factor(aa.titles$aa.journals.AAD.2011.Journal.List) # convert to factor
+aa.titles <- str_trim(aa.titles, side = "both") # trim extra spaces on aa list
+aa.titles <- toupper(aa.titles) # convert to upper case
+dupe.b <- duplicated(aa.titles) # logical vector of duplicates
+aa.list <- aa.titles[!dupe.b] # return all AA journals as characters, in caps, without duplicates (14,586)
+aa.list.dupes <- aa.titles[dupe.b] # return all duplicated journals from the AA list (203,883)
+
+
+
+
 # Second attempt at finding intersection: deleting leading/trailing white space:
 doaj.trim <- str_trim(doaj.list, side = "both") # trim extra spaces on doaj list
 aa.trim <- str_trim(aa.list, side = "both") # trim extra spaces on aa list
 doaj.aa.trim <- intersect(doaj.trim,aa.trim) # length is 1199. compare this to ok, difference of 27. That means 27 journals have spacing issues OTHER THAN leading/trailing white space.
+
 
 # Third attempt at finding intersection: deleting all spaces.
 doaj.repl <- str_replace_all(doaj.list, pattern = " ", repl="") # delete ALL spaces on doaj list
 aa.repl <- str_replace_all(aa.list, pattern = " ", repl="") # delete ALL spaces on aa list
 doaj.aa.repl <- intersect(doaj.repl, aa.repl) # length is 1226. This is your desired grand total.
 
+
 #What are the 27 journals?
 doaj.aa.trim.repl <- str_replace_all(doaj.aa.trim, pattern = " ", repl="") # delete ALL spaces on okk list
 all.repl <- doaj.aa.repl %in% doaj.aa.trim.repl # get all values in ok that are in okk
 missing <- doaj.aa.repl[!all.repl] # here are the 27 missing journals: all with colons, punctuation, etc.! Problem is, you don't know if these are messed up in the DOAJ or AA list--but probably the DOAJ list.
+
+
 # So rather than go through and screw with everything, I'm going to write a second function that deletes all spaces, and looks just for these.
 
 oa.journals <- function(directory) {
@@ -38,7 +58,7 @@ oa.journals <- function(directory) {
   # Returns:
   #   a dataframe with three variables: department (or school or program), journal name, and number of articles published in that journal by that department/school/program
   
-  dirct <- file.path(getwd(), directory) # set path to folder with CSV files (by department, school, or program)
+  dirct <- file.path(getwd(), "data", "2014-02-02", directory) # set path to folder with CSV files (by department, school, or program)
   files <- list.files(dirct) # list files in directory
   filepath <- file.path(dirct, files) # path of files
   df <- data.frame(matrix(nrow=0, ncol=3)) # create empty data frame
@@ -80,4 +100,13 @@ oa.journals <- function(directory) {
   return(df)
 }
 
-depts <- oa.journals("Departments")
+depts <- oa.journals("AADepartments")
+
+#Write CSVs
+write.csv(doaj.list, file=file.path(getwd(), "results", "2014-02-26", "tables", "doaj.list.csv"))
+write.csv(aa.list, file=file.path(getwd(), "results", "2014-02-26", "tables",  "aa.list.csv"))
+write.csv(doaj.aa.trim, file=file.path(getwd(), "results", "2014-02-26", "tables", "doaj.aa.trim.csv"))
+write.csv(doaj.aa.repl, file=file.path(getwd(), "results", "2014-02-26", "tables", "doaj.aa.repl.csv"))
+write.csv(doaj.aa.trim.repl, file=file.path(getwd(), "results", "2014-02-26", "tables", "doaj.aa.trim.repl.csv"))
+write.csv(missing, file=file.path(getwd(), "results", "2014-02-26", "tables",  "missing.csv"))
+write.csv(depts, file=file.path(getwd(), "results", "2014-02-26", "tables", "depts.csv"))
