@@ -14,7 +14,7 @@ ArtCounts <- data.frame("Discipline"=as.character(rownames(ArtCounts)), "Article
 
 #plot complete depts (ggplot)
 ArtCounts$Journals.ordered <- reorder(ArtCounts$Discipline, ArtCounts$ArticlesPublished) #sort Discipline by Articles Published
-pth <- pth <- file.path(getwd(), "Plots", "plots4") # set a location for plots to be saved
+pth <- pth <- file.path(getwd(), "Plots", "plots5") # set a location for plots to be saved
 compl.depts.plot <- ggplot(data=ArtCounts) +
   geom_bar(aes(x=Journals.ordered,y=ArticlesPublished),fill="orange",color="black",stat="identity") +
   coord_flip() +
