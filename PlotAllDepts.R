@@ -12,9 +12,12 @@ ArtCounts <- data.frame("ArticlesPublished"=ArtCounts[complete.cases(ArtCounts)]
 ArtCounts <- data.frame("Discipline"=as.character(rownames(ArtCounts)), "ArticlesPublished"=as.integer(ArtCounts$ArticlesPublished)) #make the rownames of that df into a variable
 
 
+library(ggplot2) # Load ggplot package
+
+
 #plot complete depts (ggplot)
 ArtCounts$Journals.ordered <- reorder(ArtCounts$Discipline, ArtCounts$ArticlesPublished) #sort Discipline by Articles Published
-pth <- pth <- file.path(getwd(), "Plots", "plots5") # set a location for plots to be saved
+pth <- pth <- file.path(getwd(), "results", "2014-02-26", "plots") # set a location for plots to be saved
 compl.depts.plot <- ggplot(data=ArtCounts) +
   geom_bar(aes(x=Journals.ordered,y=ArticlesPublished),fill="orange",color="black",stat="identity") +
   coord_flip() +
@@ -26,18 +29,7 @@ compl.depts.plot <- ggplot(data=ArtCounts) +
 ggsave("AllDepts.png", path=pth, width=15, height=15) #save files 
 
 
-#plot depts color-coded by journal (ggplot)
-# this needs some work, but I'm not going to do it. The colors are wrong. It's too stacked to look good anyway.
-discplot <- ggplot(data=depts.compl) + 
-  geom_bar(aes(x=Discipline, y=ArticlesPublished, fill=factor(depts.compl$Journal))) +
-  coord_flip() + 
-  scale_fill_discrete(breaks=depts.compl$Journal)
-print(discplot)
-
-#return df oa journals single discipline
-function(discipline) {
-  depts.compl <- depts[complete.cases(depts),] #subset of depts with only complete cases (remove NAs)
-  sbst <- depts.compl[depts.compl$Discipline == discipline,]
-  return(sbst)
-}
-
+#write CSVs
+write.csv(depts.compl, file=file.path(getwd(), "results", "2014-02-26", "tables", "depts.compl.csv"))
+write.csv(depts.incompl, file=file.path(getwd(), "results", "2014-02-26", "tables", "depts.incompl.csv"))
+write.csv(ArtCounts, file=file.path(getwd(), "results", "2014-02-26", "tables", "artcounts.csv"))
