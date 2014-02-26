@@ -9,7 +9,7 @@
 ##First create dataframe of complete cases & from that, a list of departments
   depts.compl <- depts[complete.cases(depts), ] # subset of depts with only complete cases (remove NAs)
   deptslist <- unique(depts.compl$Discipline) # create list of departments with oa publications
-  pth <- file.path(getwd(), "Plots", "plots3") # set a location for plots to be saved
+  pth <- file.path(getwd(), "Plots", "plots5") # set a location for plots to be saved
 #Loop through depts.compl dataframe, creating graph for each discipline and saving it to file
   for(i in seq(length(deptslist))) { #looping through the depts (seq must be used because it is a list)
       sbst <- depts.compl[depts.compl$Discipline == deptslist[i], ] # create a subset of depts where the discipline is equal to discipline list item i
@@ -20,7 +20,7 @@
         geom_text(aes(x=Journal, y=ArticlesPublished, label=ArticlesPublished, ymax=20), hjust = -1, size=6) + #set text labels
         scale_y_continuous(limits=c(0,40)) + # set limits for y axis (which is flipped, so represents Articles)
         ggtitle(label=(paste("Open Access Journal Publications in UTA",deptslist[i], "Department, 2004-2011"))) # give it a title
-      ggsave(sprintf("%s.jpg", deptslist[i]), path=pth, width=15, height=15) #save files 
+      ggsave(sprintf("%s.png", deptslist[i]), path=pth, width=15, height=15) #save files 
   }
 }
 
