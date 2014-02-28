@@ -1,7 +1,7 @@
 # Need stringr package:
 library(stringr)
 
-setwd("J:/Escience/Academic Analytics") #set working directory
+setwd("J:/Escience/AcademicAnalytics") #set working directory
 
 
 scopus <- read.csv(file=file.path(getwd(), "data", "2014-02-02", "Scopus", "Scopus.selected.csv")) # read in the Academic Analytics file
