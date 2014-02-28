@@ -1,21 +1,25 @@
-setwd("C:/Users/clarke/Desktop/OA Research Project/ROAR") #set working directory
-melibea <- read.csv(file=file.path(getwd(), "MELIBEA.csv"), na.strings="") # read in data
+setwd("J:/Escience/Academic Analytics") #set working directory
+melibea <- read.csv(file=file.path(getwd(), "data", "2014-02-02", "Melibea", "MELIBEA.csv"), na.strings="") # read in data
 
-
-
+pth <- file.path(getwd(), "results", "2014-02-26", "plots", "Melibea")
 
 melibea.req.plot <- ggplot(data=melibea) + #plots request v. requirement
   geom_bar(aes(Policy))
-print(melibea.req)
+print(melibea.req.plot)
+ggsave("melibea.policy.plot.png", path=pth, width=10, height=10) #save files 
 
 
 melibea.types.plot <- ggplot(data=melibea) + #plot by when deposit is required
   geom_bar ((aes(Policy, fill=When)))
 print(melibea.types.plot)
+ggsave("melibea.policy.when.png", path=pth, width=10, height=10) #save files 
+
 
 melibea.types.plot <- ggplot(data=melibea) + #plot by where deposit is required
   geom_bar ((aes(Policy, fill=Where)))
 print(melibea.types.plot)
+ggsave("melibea.policy.where.png", path=pth, width=10, height=10) #save files 
+
 
 
 
