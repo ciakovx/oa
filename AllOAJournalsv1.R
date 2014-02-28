@@ -1,15 +1,14 @@
 # Need stringr package:
 library(stringr)
 
-setwd("C:/Users/clarke/Desktop/AcademicAnalyticsData") #set working directory
+setwd("J:/Escience/Academic Analytics") #set working directory
 
 
-scopus <- read.csv(file=file.path(getwd(), "Scopus.csv")) # read in scopus file 
-names(scopus) <- c("Title", "Print.issn", "E.issn") # change column names
+scopus <- read.csv(file=file.path(getwd(), "data", "2014-02-02", "Scopus", "Scopus.selected.csv")) # read in the Academic Analytics file
 
 
-doaj <- read.csv(file="C:/Users/clarke/Desktop/AcademicAnalyticsData/DOAJ.csv") # read in the DOAJ file
-aa.journals <- read.csv(file=file.path(getwd(), "Copy of Journals_AAD2011.csv")) # read in the Academic Analytics file
+doaj <- read.csv(file=file.path(getwd(), "data", "2014-02-02", "DOAJ", "DOAJ.csv")) # read in directory of OA journals file
+aa.journals <- read.csv(file=file.path(getwd(), "data", "2014-02-02", "AAJournalList", "AAJournalList.csv")) # read in the Academic Analytics file
 
 
 
@@ -24,7 +23,7 @@ doaj.list.dupes <- doaj.titles[dupe.a] # return all duplicated journals from the
 
 aa.titles <- data.frame(aa.journals$AAD.2011.Journal.List) # get list of AA titles
 aa.titles <- factor(aa.titles$aa.journals.AAD.2011.Journal.List) # convert to factor
-aa.titles <- str_trim(aa.list, side = "both") # trim extra spaces on aa list
+aa.titles <- str_trim(aa.titles, side = "both") # trim extra spaces on aa list
 aa.titles <- toupper(aa.titles) # convert to upper case
 dupe.b <- duplicated(aa.titles) # logical vector of duplicates
 aa.list <- aa.titles[!dupe.b] # return all AA journals as characters, in caps, without duplicates (14,586)
