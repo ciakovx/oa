@@ -1,7 +1,7 @@
-setwd("J:/Escience/Academic Analytics/data/2014-02-02/RC")
+setwd("J:/Escience/Academic Analytics")
 
 Totals <- function(directory) {
-  dirct <- file.path(getwd(), directory) # set path to folder with CSV files
+  dirct <- file.path(getwd(), "data", "2014-02-02", "RC", directory) # set path to folder with CSV files
   files <- list.files(dirct) # list files in directory
   filepath <- file.path(dirct, files) # path of files
   df <- data.frame(matrix(nrow=0, ncol=4)) # create empty data frame
@@ -75,3 +75,7 @@ for(i in seq(length(depts.ir.list))) { #looping through the depts (seq must be u
     ggtitle(label=(paste("Publishers of Items Deposited by",depts.ir.list[i]))) # give it a title
   ggsave(sprintf("%s.png", depts.ir.list[i]), path=pth, width=10, height=10) #save files 
 }
+
+#write CSVs
+write.csv(depts.ir, file=file.path(getwd(), "results", "2014-02-26", "tables", "RC", "depts.ir.csv"))
+
