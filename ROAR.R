@@ -1,5 +1,7 @@
-setwd("C:/Users/clarke/Desktop/OA Research Project/ROAR") #set working directory
-roar <- read.csv(file=file.path(getwd(), "roarmap.csv"), na.strings="") # read in data
+setwd("J:/Escience/Academic Analytics") #set working directory
+roar <- read.csv(file=file.path(getwd(), "data", "2014-02-02", "ROAR", "roarmap.csv"), na.strings="") # read in data
+
+pth <- file.path(getwd(), "results", "2014-02-26", "plots", "ROAR")
 
 
 # count and plot mandate types by freq
@@ -15,6 +17,8 @@ roartypes.plot <- ggplot(data=roartypes) +
   ylab("Frequency") +
   xlab("Type of Mandate") +
   theme(text = element_text(size=20)) 
-ggsave("MandateTypes.png", width=15, height=15) #save files 
+ggsave("Roar.Mandate.Types.png", path = pth, width=10, height=10) #save files 
 
+#Write CSVs
+write.csv(roartypes, file=file.path(getwd(), "results", "2014-02-26", "tables", "ROAR", "roartypes.csv"))
 
