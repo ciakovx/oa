@@ -12,13 +12,22 @@ aa.journals <- read.csv(file=file.path(getwd(), "data", "2014-02-02", "AAJournal
 
 
 
-doaj.titles <- data.frame(doaj$Title) # get list of DOAJ titles
-doaj.titles <- factor(doaj.titles$doaj.Title) # convert to factor
+#get a list of DOAJ titles as character
+doaj.main.titles <- data.frame("Title"=doaj$Title) # get list of DOAJ titles
+doaj.main.titles <- as.character(doaj.main.titles$Title) # convert to character
+
+#get list of DOAJ alternative titles as character
+doaj.alt.titles <- data.frame("Title"=doaj$Title.Alternative) # get list of alternative DOAJ titles
+doaj.alt.titles <- data.frame("Title"=doaj.alt.titles[complete.cases(doaj.alt.titles),]) #There are over 2,000 here, but running an intersect with AA only finds 30. Unfortunately, none of these are in this analysis.
+doaj.alt.titles <- as.character(doaj.alt.titles$Title) # convert to character
+
+doaj.titles <- c(doaj.main.titles, doaj.alt.titles) # concatenate main & alternative titles
+doaj.titles <- factor(doaj.titles)
 doaj.titles <- str_trim(doaj.titles, side = "both") # trim extra spaces on doaj list
 doaj.titles <- toupper(doaj.titles) # convert to upper case
 dupe.a <- duplicated(doaj.titles) # logical vector of duplicates
 doaj.list <- doaj.titles[!dupe.a] # return all DOAJ titles as characters, in caps, without duplicates (9,786)
-doaj.list.dupes <- doaj.titles[dupe.a] # return all duplicated journals from the DOAJ list (18)
+doaj.dupes <- doaj.titles[dupe.a]# return all duplicated journals from the DOAJ list (18)
 
 
 aa.titles <- data.frame(aa.journals$AAD.2011.Journal.List) # get list of AA titles
@@ -40,9 +49,9 @@ scopus.list.dupes <- scopus.titles[dupe.c] # return all duplicated journals from
 
 
 # Updated totals after applying trim
-aa.doaj <- intersect(doaj.list,aa.list) # intersection of AA & DOAJ journals (1,198)
-aa.scopus <- intersect(aa.list, scopus.list) # intersection of AA & Scopus (10,745) #the same: this proves it was DOAJ
-scopus.doaj <- intersect(scopus.list, doaj.list) # intersection of Scopus & DOAJ (2,118)
+aa.doaj <- intersect(doaj.list,aa.list) # intersection of AA & DOAJ journals (1,226)
+aa.scopus <- intersect(aa.list, scopus.list$scopus.Title) # intersection of AA & Scopus (10,745) #the same: this proves it was DOAJ
+scopus.doaj <- intersect(scopus.list$Scopus.Title, doaj.list) # intersection of Scopus & DOAJ (2,118)
 
 doaj.total <- intersect(aa.doaj, scopus.doaj) # DOAJ titles in both AA & Scopus (837)
 
