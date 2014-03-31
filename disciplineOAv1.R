@@ -34,7 +34,6 @@ clean.aa <- function(aadata) {
   dupe <- duplicated(aa.titles) # logical vector of duplicates
   aa.list <- aa.titles[!dupe,] # return all AA journals as characters, in caps, without duplicates (14,586)
   aa.list <- as.character(aa.list) # convert from factor to character string
-  #aa.list.dupes <- aa.titles[dupe] # return all duplicated journals from the AA list (203,883)
   return(aa.list)
 }
 aa.list <- clean.aa(aa.journals)
